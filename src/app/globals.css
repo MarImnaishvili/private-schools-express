@@ -1,0 +1,40 @@
+/* src/app/globals.css */
+
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-primary: #3b82f6;
+  --color-secondary: #8b5cf6;
+  --color-accent: #10b981;
+  --color-muted: #6b7280;
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+
+  /* Fonts */
+  --font-sans: system-ui, -apple-system, sans-serif;
+}
+
+.ag-cell:focus,
+.ag-cell:active {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.ag-no-focus-outline:focus,
+.ag-cell.no-outline-cell:focus,
+.ag-cell.no-outline-cell:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
