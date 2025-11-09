@@ -6,7 +6,7 @@ services:
     region: frankfurt # Choose closest to your users: oregon, frankfurt, singapore
     plan: free # or starter ($7/month) for better performance
     rootDir: backend # Correct path to backend directory
-    buildCommand: npm install && npx prisma generate && npm run build
+    buildCommand: npm ci && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
