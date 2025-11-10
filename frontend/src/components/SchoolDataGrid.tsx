@@ -377,6 +377,7 @@ export default function SchoolsGrid() {
     // Created By column - only visible for admins
     ...(role === 'admin' ? [{
       headerName: "Created By",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       field: "creator.email" as any,
       sortable: true,
       resizable: true,
