@@ -3,6 +3,7 @@
  */
 
 import { createClient } from './supabase/client';
+import { SchoolFormData } from '../schemas/schema';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -105,18 +106,18 @@ export const api = new ApiClient(API_BASE_URL);
 
 // Export typed API methods for schools
 export const schoolsApi = {
-  getAll: (params?: { page?: number; pageSize?: number }) =>
-    api.get('/api/schools', params),
+  getAll: (params?: { page?: number; pageSize?: number }): Promise<SchoolFormData[]> =>
+    api.get<SchoolFormData[]>('/api/schools', params),
 
-  getById: (id: string) =>
-    api.get(`/api/schools/${id}`),
+  getById: (id: string): Promise<SchoolFormData> =>
+    api.get<SchoolFormData>(`/api/schools/${id}`),
 
-  create: (data: unknown) =>
-    api.post('/api/schools', data),
+  create: (data: SchoolFormData): Promise<SchoolFormData> =>
+    api.post<SchoolFormData>('/api/schools', data),
 
-  update: (id: string, data: unknown) =>
-    api.put(`/api/schools/${id}`, data),
+  update: (id: string, data: SchoolFormData): Promise<SchoolFormData> =>
+    api.put<SchoolFormData>(`/api/schools/${id}`, data),
 
-  delete: (id: string) =>
-    api.delete(`/api/schools/${id}`),
+  delete: (id: string): Promise<{ message: string }> =>
+    api.delete<{ message: string }>(`/api/schools/${id}`),
 };

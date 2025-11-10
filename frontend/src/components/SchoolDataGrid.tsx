@@ -70,7 +70,7 @@ export default function SchoolsGrid() {
       setLoading(true);
       setError(null);
 
-      const fullData: SchoolFormData[] = await schoolsApi.getAll();
+      const fullData = await schoolsApi.getAll();
 
       const gridData: SchoolGridRow[] = fullData.map((school) => ({
         id: school.id!,
