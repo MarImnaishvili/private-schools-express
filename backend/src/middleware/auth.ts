@@ -119,7 +119,7 @@ export const requireAuth = (
  */
 export const optionalAuthenticate = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
