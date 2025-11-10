@@ -137,15 +137,25 @@ export const api = new ApiClient(API_BASE_URL);
 // Export typed API methods for schools
 export const schoolsApi = {
   // Authenticated requests (applies RBAC)
-  getAll: (params?: { page?: number; pageSize?: number; lightweight?: boolean }): Promise<SchoolDataWithCreator[]> =>
-    api.get<SchoolDataWithCreator[]>('/api/schools', params ? { ...params, lightweight: params.lightweight ? 'true' : 'false' } as any : { lightweight: 'false' }),
+  getAll: (params?: { page?: number; pageSize?: number; lightweight?: boolean }): Promise<SchoolDataWithCreator[]> => {
+    const queryParams: Record<string, string | number> = {};
+    if (params?.page !== undefined) queryParams.page = params.page;
+    if (params?.pageSize !== undefined) queryParams.pageSize = params.pageSize;
+    queryParams.lightweight = params?.lightweight ? 'true' : 'false';
+    return api.get<SchoolDataWithCreator[]>('/api/schools', queryParams);
+  },
 
   getById: (id: string): Promise<SchoolDataWithCreator> =>
     api.get<SchoolDataWithCreator>(`/api/schools/${id}`),
 
   // Public requests (no authentication, always shows all schools)
-  getAllPublic: (params?: { page?: number; pageSize?: number; lightweight?: boolean }): Promise<SchoolDataWithCreator[]> =>
-    api.publicGet<SchoolDataWithCreator[]>('/api/schools', params ? { ...params, lightweight: params.lightweight ? 'true' : 'false' } as any : { lightweight: 'false' }),
+  getAllPublic: (params?: { page?: number; pageSize?: number; lightweight?: boolean }): Promise<SchoolDataWithCreator[]> => {
+    const queryParams: Record<string, string | number> = {};
+    if (params?.page !== undefined) queryParams.page = params.page;
+    if (params?.pageSize !== undefined) queryParams.pageSize = params.pageSize;
+    queryParams.lightweight = params?.lightweight ? 'true' : 'false';
+    return api.publicGet<SchoolDataWithCreator[]>('/api/schools', queryParams);
+  },
 
   getByIdPublic: (id: string): Promise<SchoolDataWithCreator> =>
     api.publicGet<SchoolDataWithCreator>(`/api/schools/${id}`),
