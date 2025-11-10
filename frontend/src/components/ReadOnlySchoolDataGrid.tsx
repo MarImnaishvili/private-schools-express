@@ -277,7 +277,7 @@ export default function ReadOnlySchoolsGrid() {
     // Created By column - only visible for admins
     ...(role === 'admin' ? [{
       headerName: "Created By",
-      field: "creator.email",
+      field: "creator.email" as any,
       sortable: true,
       resizable: true,
       width: 200,
