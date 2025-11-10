@@ -61,7 +61,8 @@ export default function ReadOnlySchoolsGrid() {
       setError(null);
 
       // Use public API to always show all schools (no authentication)
-      const fullData = await schoolsApi.getAllPublic();
+      // Use lightweight mode for faster loading (only grid fields, not full school data)
+      const fullData = await schoolsApi.getAllPublic({ lightweight: true });
 
       const gridData: SchoolGridRow[] = fullData.map((school) => ({
         id: school.id!,

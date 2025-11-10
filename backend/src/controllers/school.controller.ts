@@ -65,7 +65,7 @@ function transformNestedUpdates(data: NestedUpdateData) {
  */
 export const getAllSchools = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { page, pageSize } = req.query;
+    const { page, pageSize, lightweight } = req.query;
     const userId = req.user?.id;
     const userRole = req.userRole;
 
@@ -80,11 +80,27 @@ export const getAllSchools = async (req: Request, res: Response): Promise<void> 
     }
     // If not authenticated, show all schools (public access)
 
-    // If no pagination params, return all schools (for grid client-side pagination)
-    if (!page && !pageSize) {
-      const schools = await prisma.schoolData.findMany({
-        where: whereClause,
-        include: {
+    // Determine include based on lightweight mode
+    const includeClause = lightweight === 'true'
+      ? {
+          // Lightweight mode: only fields needed for grid display
+          address: {
+            select: {
+              city: true,
+              district: true,
+              street: true,
+              zipCode: true,
+            }
+          },
+          creator: {
+            select: {
+              id: true,
+              email: true,
+            }
+          }
+        }
+      : {
+          // Full mode: include all relations
           address: true,
           infrastructure: true,
           primary: { include: { media: true } },
@@ -96,7 +112,13 @@ export const getAllSchools = async (req: Request, res: Response): Promise<void> 
               email: true,
             }
           }
-        },
+        };
+
+    // If no pagination params, return all schools (for grid client-side pagination)
+    if (!page && !pageSize) {
+      const schools = await prisma.schoolData.findMany({
+        where: whereClause,
+        include: includeClause,
         orderBy: {
           createdAt: 'desc',
         },
@@ -116,19 +138,7 @@ export const getAllSchools = async (req: Request, res: Response): Promise<void> 
       skip,
       take: pageSizeNum,
       where: whereClause,
-      include: {
-        address: true,
-        infrastructure: true,
-        primary: { include: { media: true } },
-        basic: { include: { media: true } },
-        secondary: { include: { media: true } },
-        creator: {
-          select: {
-            id: true,
-            email: true,
-          }
-        }
-      },
+      include: includeClause,
       orderBy: {
         createdAt: 'desc',
       },

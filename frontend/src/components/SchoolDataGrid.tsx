@@ -70,7 +70,8 @@ export default function SchoolsGrid() {
       setLoading(true);
       setError(null);
 
-      const fullData = await schoolsApi.getAll();
+      // Use lightweight mode for faster loading (only grid fields, not full school data)
+      const fullData = await schoolsApi.getAll({ lightweight: true });
 
       const gridData: SchoolGridRow[] = fullData.map((school) => ({
         id: school.id!,

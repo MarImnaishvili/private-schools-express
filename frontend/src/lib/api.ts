@@ -137,15 +137,15 @@ export const api = new ApiClient(API_BASE_URL);
 // Export typed API methods for schools
 export const schoolsApi = {
   // Authenticated requests (applies RBAC)
-  getAll: (params?: { page?: number; pageSize?: number }): Promise<SchoolDataWithCreator[]> =>
-    api.get<SchoolDataWithCreator[]>('/api/schools', params),
+  getAll: (params?: { page?: number; pageSize?: number; lightweight?: boolean }): Promise<SchoolDataWithCreator[]> =>
+    api.get<SchoolDataWithCreator[]>('/api/schools', params ? { ...params, lightweight: params.lightweight ? 'true' : 'false' } as any : { lightweight: 'false' }),
 
   getById: (id: string): Promise<SchoolDataWithCreator> =>
     api.get<SchoolDataWithCreator>(`/api/schools/${id}`),
 
   // Public requests (no authentication, always shows all schools)
-  getAllPublic: (params?: { page?: number; pageSize?: number }): Promise<SchoolDataWithCreator[]> =>
-    api.publicGet<SchoolDataWithCreator[]>('/api/schools', params),
+  getAllPublic: (params?: { page?: number; pageSize?: number; lightweight?: boolean }): Promise<SchoolDataWithCreator[]> =>
+    api.publicGet<SchoolDataWithCreator[]>('/api/schools', params ? { ...params, lightweight: params.lightweight ? 'true' : 'false' } as any : { lightweight: 'false' }),
 
   getByIdPublic: (id: string): Promise<SchoolDataWithCreator> =>
     api.publicGet<SchoolDataWithCreator>(`/api/schools/${id}`),
