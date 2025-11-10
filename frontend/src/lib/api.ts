@@ -82,6 +82,36 @@ class ApiClient {
     return this.request<T>(endpoint, { method: 'GET', params });
   }
 
+  /**
+   * Public GET request without authentication headers
+   */
+  async publicGet<T>(endpoint: string, params?: Record<string, string | number>): Promise<T> {
+    const { params: queryParams, ...fetchConfig } = { params };
+    const url = this.buildURL(endpoint, queryParams);
+
+    const defaultConfig: RequestInit = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      ...fetchConfig,
+    };
+
+    try {
+      const response = await fetch(url, defaultConfig);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Request failed' }));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('API request failed:', error);
+      throw error;
+    }
+  }
+
   async post<T>(endpoint: string, data?: unknown): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'POST',
@@ -106,11 +136,19 @@ export const api = new ApiClient(API_BASE_URL);
 
 // Export typed API methods for schools
 export const schoolsApi = {
+  // Authenticated requests (applies RBAC)
   getAll: (params?: { page?: number; pageSize?: number }): Promise<SchoolDataWithCreator[]> =>
     api.get<SchoolDataWithCreator[]>('/api/schools', params),
 
   getById: (id: string): Promise<SchoolDataWithCreator> =>
     api.get<SchoolDataWithCreator>(`/api/schools/${id}`),
+
+  // Public requests (no authentication, always shows all schools)
+  getAllPublic: (params?: { page?: number; pageSize?: number }): Promise<SchoolDataWithCreator[]> =>
+    api.publicGet<SchoolDataWithCreator[]>('/api/schools', params),
+
+  getByIdPublic: (id: string): Promise<SchoolDataWithCreator> =>
+    api.publicGet<SchoolDataWithCreator>(`/api/schools/${id}`),
 
   create: (data: SchoolFormData): Promise<SchoolDataWithCreator> =>
     api.post<SchoolDataWithCreator>('/api/schools', data),

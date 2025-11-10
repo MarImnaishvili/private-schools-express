@@ -60,7 +60,8 @@ export default function ReadOnlySchoolsGrid() {
       setLoading(true);
       setError(null);
 
-      const fullData = await schoolsApi.getAll();
+      // Use public API to always show all schools (no authentication)
+      const fullData = await schoolsApi.getAllPublic();
 
       const gridData: SchoolGridRow[] = fullData.map((school) => ({
         id: school.id!,
@@ -482,5 +483,6 @@ export default function ReadOnlySchoolsGrid() {
 }
 
 async function fetchFullSchoolById(id: string): Promise<SchoolFormData> {
-  return await schoolsApi.getById(id) as SchoolFormData;
+  // Use public API to allow all users (including employees) to view school details
+  return await schoolsApi.getByIdPublic(id) as SchoolFormData;
 }
