@@ -8,6 +8,7 @@ import {
   GridReadyEvent,
   ModuleRegistry,
   AllCommunityModule,
+  ValueFormatterParams,
 } from "ag-grid-community";
 import { useTranslations } from "next-intl";
 import { useRouter, useParams } from "next/navigation";
@@ -69,7 +70,7 @@ export default function SchoolsGrid() {
       setLoading(true);
       setError(null);
 
-      const fullData: any[] = await schoolsApi.getAll();
+      const fullData: SchoolFormData[] = await schoolsApi.getAll();
 
       const gridData: SchoolGridRow[] = fullData.map((school) => ({
         id: school.id!,
@@ -381,7 +382,7 @@ export default function SchoolsGrid() {
       resizable: true,
       width: 200,
       filter: true,
-      valueFormatter: (params: any) => params.data?.creator?.email || "N/A",
+      valueFormatter: (params: ValueFormatterParams) => params.data?.creator?.email || "N/A",
     }] : []),
     {
       headerName: tForm("address"),
