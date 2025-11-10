@@ -111,3 +111,56 @@ export const requireAuth = (
   }
   next();
 };
+
+/**
+ * Optional authentication middleware
+ * If token is present, verifies it and attaches user to request
+ * If token is missing, continues without authentication (for public access)
+ */
+export const optionalAuthenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    // If no auth header, continue without authentication (public access)
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      next();
+      return;
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+
+    // Create Supabase client
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    // Verify token and get user
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+
+    // If token is invalid, continue without authentication instead of returning error
+    if (error || !user) {
+      next();
+      return;
+    }
+
+    // Attach user to request
+    req.user = user;
+
+    // Get user role from database
+    const { prisma } = await import('../lib/prisma');
+    const userRole = await prisma.userRole.findUnique({
+      where: { user_id: user.id },
+      select: { role: true }
+    });
+
+    req.userRole = userRole?.role || null;
+
+    next();
+  } catch (error) {
+    console.error('Optional authentication error:', error);
+    // On error, continue without authentication
+    next();
+  }
+};

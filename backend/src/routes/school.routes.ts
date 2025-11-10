@@ -6,16 +6,18 @@ import {
   updateSchool,
   deleteSchool,
 } from '../controllers/school.controller';
-import { authenticate, requireAuth } from '../middleware/auth';
+import { authenticate, requireAuth, optionalAuthenticate } from '../middleware/auth';
 
 const router = Router();
 
-// Public routes (no authentication required)
-// GET /api/schools - Get all schools with optional pagination (public view)
-router.get('/', getAllSchools);
+// Public routes with optional authentication
+// GET /api/schools - Get all schools with optional pagination
+// If authenticated: employees see only their schools, admins see all
+// If not authenticated: public users see all schools
+router.get('/', optionalAuthenticate, getAllSchools);
 
-// GET /api/schools/:id - Get a single school by ID (public view)
-router.get('/:id', getSchoolById);
+// GET /api/schools/:id - Get a single school by ID
+router.get('/:id', optionalAuthenticate, getSchoolById);
 
 // Protected routes (authentication required)
 // POST /api/schools - Create a new school
