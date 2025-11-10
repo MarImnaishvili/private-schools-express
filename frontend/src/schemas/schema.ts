@@ -90,3 +90,13 @@ export const schoolSchema = z.object({
 });
 
 export type SchoolFormData = z.infer<typeof schoolSchema>;
+
+// Extended type for API responses that includes server-side fields
+export interface SchoolDataWithCreator extends SchoolFormData {
+  creator?: {
+    email: string;
+    id: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+}
